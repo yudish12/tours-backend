@@ -32,11 +32,15 @@ const checkID = async (req, res, next, val) => {
 const getAllTours = async (req, res) => {
   try {
     const queryObj = { ...req.query };
-    const excludedFields = ['sort', 'page', 'limit', 'fields'];
 
+    //filtering
+    const excludedFields = ['sort', 'page', 'limit', 'fields'];
     excludedFields.forEach((e) => delete queryObj[e]);
+
     //create query
     const query = await tours.find(queryObj);
+
+    //Advanced Filtering
 
     //execute query
     const tour = await query;
