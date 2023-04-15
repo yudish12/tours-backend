@@ -1,6 +1,11 @@
 const tours = require('../models/tours');
 
-const stringData = JSON.stringify(tours);
+const alias = (req, res, next) => {
+  req.query.sort = 'price -ratingsAverage';
+  req.query.limit = '5';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
 
 const checkBody = (req, res, next) => {
   if (!req.body.name) {
@@ -29,18 +34,124 @@ const checkID = async (req, res, next, val) => {
   next();
 };
 
+const getTourStats = async (req, res) => {
+  try {
+    const stats = await tours.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.7 } },
+      },
+      {
+        $group: {
+          _id: '$difficulty',
+          totalCost: { $sum: '$price' },
+          minimumPrice: { $min: '$price' },
+          maximumPrice: { $max: '$price' },
+          averagePrice: { $avg: '$price' },
+          averageRating: { $avg: '$ratingsAverage' },
+          numberOfTours: { $sum: 1 },
+          TotalRating: { $sum: '$ratingsQuantity' },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      message: 'success',
+      data: stats,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      message: 'Failed',
+      data: error,
+    });
+  }
+};
+
+const getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1;
+
+    const startDate = new Date(`${year}-01-01`).toISOString();
+    const endDate = new Date(`${year}-12-31`).toISOString();
+
+    const stats = await tours.aggregate([
+      { $unwind: '$startDates' },
+      {
+        $match: {
+          startDates: {
+            $gte: startDate,
+            $lt: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$difficulty',
+          year: { $first: year },
+          totalCost: { $sum: '$price' },
+          minimumPrice: { $min: '$price' },
+          maximumPrice: { $max: '$price' },
+          averagePrice: { $avg: '$price' },
+          averageRating: { $avg: '$ratingsAverage' },
+          numberOfTours: { $sum: 1 },
+          TotalRating: { $sum: '$ratingsQuantity' },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      message: 'success',
+      data: stats,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      message: 'Failed',
+      data: error,
+    });
+  }
+};
+
 const getAllTours = async (req, res) => {
   try {
     const queryObj = { ...req.query };
-
-    //filtering
+    // 1A) filtering
     const excludedFields = ['sort', 'page', 'limit', 'fields'];
     excludedFields.forEach((e) => delete queryObj[e]);
 
-    //create query
-    const query = await tours.find(queryObj);
+    // 1B) Advanced Filtering
+    Object.keys(queryObj).map((e) => {
+      if (typeof queryObj[e] == 'object') {
+        const child = queryObj[e];
+        Object.keys(child).map((el) => {
+          child['$' + el] = child[el];
+          delete child[el];
+        });
+      }
+    });
 
-    //Advanced Filtering
+    //create query
+    let query = tours.find(queryObj);
+
+    // //2)Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('id');
+    }
+
+    //3) field limiting
+    if (req.query.fields) {
+      const fieldNames = req.query.fields.split(',').join(' ');
+      query = query.select(fieldNames);
+    }
+
+    //4) Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
 
     //execute query
     const tour = await query;
@@ -49,6 +160,7 @@ const getAllTours = async (req, res) => {
       data: tour,
     });
   } catch (error) {
+    // console.log(error);
     res.status(404).json({
       message: 'failed',
       error: error,
@@ -123,4 +235,7 @@ module.exports = {
   deleteTour,
   checkID,
   checkBody,
+  alias,
+  getTourStats,
+  getMonthlyPlan,
 };

@@ -42,6 +42,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// app.get('/api/v1/tours/top5cheap', (req, res) => console.log('x'));
+
 app.use('/api/v1/tours', toursRoutes);
 
 app.use('/api/v1/users', userRoutes);
