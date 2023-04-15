@@ -8,12 +8,12 @@ const tours_schema = new Schema(
     id: {
       type: Number,
       required: [true, 'A tour must have an id'],
+      unique: [true, 'Duplicate id found'],
     },
     name: {
       type: String,
       required: [true, 'A tour must have a name'],
-      validate: validator.isAlpha,
-      unique: true,
+      unique: [true, 'A tour already exists by that name'],
     },
     slug: String,
     duration: Number,
@@ -22,7 +22,7 @@ const tours_schema = new Schema(
       type: String,
       enum: {
         values: ['difficult', 'medium', 'easy'],
-        message: 'Difficulty is either easy,medium or difficult',
+        message: 'Difficulty can either be easy,medium or difficult',
       },
     },
     ratingsAverage: {

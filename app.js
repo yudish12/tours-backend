@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: './.env' });
 
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
+
 const dbString = process.env.URI;
 mongoose
   .connect(dbString, {
@@ -26,36 +29,31 @@ app.use(express.json());
 
 app.use(morgan('dev'));
 
-// app.get('/', (req, res) => {
-//   res.status(200).json({
-//     message: 'Hello from server',
-//     app: 'natours',
-//   });
-// });
-
-// app.post('/', (req, res) => {
-//   res.send('hello');
-// });
-
 app.use((req, res, next) => {
   req.reqTime = new Date().toISOString();
   next();
 });
 
-// app.get('/api/v1/tours/top5cheap', (req, res) => console.log('x'));
-
 app.use('/api/v1/tours', toursRoutes);
 
 app.use('/api/v1/users', userRoutes);
 
-// app.route('/api/v1/tours').get(getAllTours).post(createTour);
+app.all('*', (req, res, next) => {
+  //AppError class for error handler object
+  next(new AppError(`Cannot find route ${req.originalUrl} in the server`));
+});
 
-// app
-//   .route('/api/v1/tours/:id')
-//   .get(getTour)
-//   .delete(deleteTour)
-//   .patch(updateTour);
+//error middle ware whenever first arg is err object it is error middleware
+app.use(globalErrorHandler);
 
-app.listen(5000, () => {
+const server = app.listen(5000, () => {
   console.log('server started');
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNHANDLED REJECTION! ');
+  server.close(() => {
+    process.exit(1);
+  });
 });
