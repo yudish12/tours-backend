@@ -1,4 +1,5 @@
-const users = require('../dev-data/data/users.json');
+const users = require('../models/users');
+const catchAsync = require('../utils/catchAsync');
 
 const checkBody = (req, res, next) => {
   if (!req.body.name) {
@@ -20,12 +21,13 @@ const checkID = (req, res, next, val) => {
   next();
 };
 
-const getAllUsers = (req, res) => {
+const getAllUsers = catchAsync(async (req, res) => {
+  const User = await users.find();
   res.status(200).json({
     message: 'Success',
-    data: users,
+    data: User,
   });
-};
+});
 
 const createUser = (req, res) => {
   const user = req.body;
@@ -35,20 +37,25 @@ const createUser = (req, res) => {
   });
 };
 
-const getUser = (req, res) => {
-  const user = users.find((e) => e.id == req.params.id);
-  res.status(200).json({
-    messages: 'user found',
-    data: user,
-  });
-};
-
-const deleteUser = (req, res) => {
+const getUser = catchAsync(async (req, res) => {
   const { id } = req.params;
-  res.status(200).json({
-    message: 'user deleted',
+  const User = await users.findById(id);
+  return res.status(200).json({
+    messages: 'user found',
+    data: User,
   });
-};
+});
+
+const deleteUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const User = await users.findByIdAndDelete(id);
+
+  return res.status(200).json({
+    message: 'user deleted',
+    data: User,
+  });
+});
 
 const updateUser = (req, res) => {
   const { id } = req.params;
