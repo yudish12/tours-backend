@@ -3,6 +3,8 @@ const catchAsync = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const jwtFunc = require('../utils/jwtFunc');
 const AppError = require('../utils/appError');
+const emailFunc = require('../utils/email');
+const crypto = require('crypto');
 
 const signupController = catchAsync(async (req, res, next) => {
   const User = new user({
@@ -21,7 +23,7 @@ const signupController = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     message: 'User signed up successfully',
-    token: jwtFunc.signToken(userObj),
+    token: jwtFunc.signToken(userObj, res),
     userObj,
   });
 });
@@ -45,7 +47,7 @@ const loginController = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
       message: 'Logged in successfully',
-      token: jwtFunc.signToken(userObj),
+      token: jwtFunc.signToken(userObj, res),
       userObj,
     });
   } else {
@@ -94,9 +96,116 @@ const roleMiddleware = (...roles) => {
   };
 };
 
+const passwordForget = catchAsync(async (req, res, next) => {
+  //Get user based on email
+  const { email } = req.body;
+  const User = await user.findOne({ email: email });
+
+  if (!User) {
+    return next(new AppError('User does not exist', 404));
+  }
+
+  const resetToken = User.createResetToken();
+  const data = await User.save({ validateBeforeSave: false });
+
+  let url = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/users/resetPassword/${resetToken}`;
+
+  const message = `Forgot your password? Set a new password by clicking on this link ${url} If you didnt forgot your password please ignore this message`;
+  try {
+    await emailFunc({
+      email: User.email,
+      subject: 'Your password reset token (valid for 10 minutes)',
+      message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'token sent successfully check your email',
+    });
+  } catch (error) {
+    User.resetToken = undefined;
+    User.resetTokenExpires = undefined;
+    User.save();
+    next(
+      new AppError(
+        'something went wrong while sending email please try again later',
+        500
+      )
+    );
+  }
+});
+
+const resetPassword = catchAsync(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+  const User = await user.findOne({
+    resetToken: hashedToken,
+    resetTokenExpires: { $gt: Date.now() },
+  });
+
+  if (!User) {
+    return next(new AppError('Token is invalid or expired', 404));
+  }
+
+  console.log(User);
+
+  User.password = req.body.password;
+  User.passwordConfirm = req.body.passwordConfirm;
+  User.resetToken = undefined;
+  User.resetTokenExpires = undefined;
+  await User.save();
+
+  console.log(User);
+
+  const token = jwtFunc.signToken(User, res);
+
+  res.status(200).json({
+    message: 'Password changed sucessfully',
+    token,
+    data: User,
+  });
+});
+
+const updatePassword = catchAsync(async (req, res, next) => {
+  const { email, password, newPassword, confirmNewPassword } = req.body;
+
+  const User = await user.findOne({ email: email }).select('+password');
+
+  if (!User || !(await User.matchPasswords(password))) {
+    next(new AppError('Please provide correct email and password'), 401);
+  }
+
+  User.password = newPassword;
+  User.passwordConfirm = confirmNewPassword;
+  await User.save();
+
+  const token = jwtFunc.signToken(
+    {
+      _id: User._id,
+      name: User.name,
+      email: User.email,
+      role: User.role,
+    },
+    res
+  );
+
+  res.status(200).json({
+    message: 'password updated sucessfully',
+    token,
+    User,
+  });
+});
+
 module.exports = {
   signupController,
   loginController,
   authMiddleware,
   roleMiddleware,
+  passwordForget,
+  resetPassword,
+  updatePassword,
 };

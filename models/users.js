@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const user_schema = new Schema(
   {
@@ -41,8 +42,15 @@ const user_schema = new Schema(
       select: false,
     },
     passwordChangedAt: Date,
+    resetToken: String,
+    resetTokenExpires: Date,
     photo: {
       type: String,
+    },
+    active: {
+      type: Boolean,
+      select: false,
+      default: true,
     },
   },
   {
@@ -52,6 +60,8 @@ const user_schema = new Schema(
 );
 
 user_schema.methods.matchPasswords = async function (enteredPassword) {
+  console.log(enteredPassword, this.password);
+
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
@@ -63,10 +73,23 @@ user_schema.methods.changedPasswordAfter = function (JWTtimestamp) {
   return false;
 };
 
+user_schema.methods.createResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.resetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.resetTokenExpires = Date.now() + 10 * 60 * 1000;
+
+  console.log(resetToken, this.resetToken);
+  return resetToken;
+};
+
 user_schema.pre('save', async function (next) {
   //is modified is a mongoose method which tells weather a field was modified or not
   if (!this.isModified('password')) {
-    console.log('asd');
     return next();
   }
 
@@ -75,6 +98,19 @@ user_schema.pre('save', async function (next) {
 
   //password confirm is not needed so we set it to undefined
   this.passwordConfirm = undefined;
+  next();
+});
+
+user_schema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+user_schema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
   next();
 });
 

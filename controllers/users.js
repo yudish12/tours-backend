@@ -1,6 +1,15 @@
 const users = require('../models/users');
 const catchAsync = require('../utils/catchAsync');
 
+const filterObj = (obj, ...fields) => {
+  const newObj = {};
+  console.log(obj);
+  Object.keys(obj).forEach((el) => {
+    if (fields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
+
 const checkBody = (req, res, next) => {
   if (!req.body.name) {
     console.log('asd');
@@ -57,6 +66,29 @@ const deleteUser = catchAsync(async (req, res) => {
   });
 });
 
+const deleteMe = catchAsync(async (req, res) => {
+  const User = users.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({
+    message: 'Success',
+    data: null,
+  });
+});
+
+const updateMe = catchAsync(async (req, res, next) => {
+  const obj = filterObj(req.body, 'name', 'email');
+
+  const User = await users.findByIdAndUpdate(req.user._id, obj, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    message: 'success',
+    data: User,
+  });
+});
+
 const updateUser = (req, res) => {
   const { id } = req.params;
   res.status(200).json({
@@ -71,5 +103,7 @@ module.exports = {
   updateUser,
   deleteUser,
   checkID,
+  updateMe,
+  deleteMe,
   checkBody,
 };

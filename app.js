@@ -1,6 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 
 dotenv.config({ path: './.env' });
 
@@ -23,9 +28,26 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
+app.use(helmet());
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'difficulty',
+      'maxGroupSize',
+      'price',
+    ],
+  })
+);
+
+app.use(mongoSanitize()); //filters out mongodb code hence prevents nosql injection
+app.use(xss()); //filters out xss cross server scripting code hence prevents cross server scripting
+
 const morgan = require('morgan');
 
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
 
 app.use(morgan('dev'));
 
@@ -33,6 +55,14 @@ app.use((req, res, next) => {
   req.reqTime = new Date().toISOString();
   next();
 });
+
+const limiter = rateLimit({
+  max: 10,
+  windowMS: 60 * 30 * 1000,
+  message: `too many requests from the same ip,please try after an hour`,
+});
+
+app.use('/api', limiter);
 
 app.use('/api/v1/tours', toursRoutes);
 
