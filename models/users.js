@@ -52,6 +52,16 @@ const user_schema = new Schema(
       select: false,
       default: true,
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
   },
   {
     toJSON: { virtuals: true },
