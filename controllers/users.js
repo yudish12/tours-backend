@@ -38,13 +38,20 @@ const getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
-const createUser = (req, res) => {
-  const user = req.body;
+const createUser = catchAsync(async (req, res) => {
+  const User = new users({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+    role: req.body.role,
+  });
+  await User.save();
   res.status(200).json({
     message: 'user created successfully',
-    data: user,
+    data: User,
   });
-};
+});
 
 const getUser = catchAsync(async (req, res) => {
   const { id } = req.params;
@@ -66,7 +73,16 @@ const deleteUser = catchAsync(async (req, res) => {
   });
 });
 
-const deleteMe = catchAsync(async (req, res) => {
+const getMe = catchAsync(async (req, res, next) => {
+  const id = req.user._id;
+  const data = await users.findById(id);
+  res.status(200).json({
+    status: 'Success',
+    data: data,
+  });
+});
+
+const deleteMe = catchAsync(async (req, res, next) => {
   const User = users.findByIdAndUpdate(req.user._id, { active: false });
 
   res.status(204).json({
@@ -106,4 +122,5 @@ module.exports = {
   updateMe,
   deleteMe,
   checkBody,
+  getMe,
 };

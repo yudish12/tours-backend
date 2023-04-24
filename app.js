@@ -25,6 +25,7 @@ mongoose
 
 const toursRoutes = require('./routes/tours');
 const userRoutes = require('./routes/users');
+const reviewRoutes = require('./routes/reviews');
 
 const app = express();
 
@@ -67,6 +68,8 @@ app.use('/api', limiter);
 app.use('/api/v1/tours', toursRoutes);
 
 app.use('/api/v1/users', userRoutes);
+
+app.use('/api/v1/reviews', reviewRoutes);
 
 app.all('*', (req, res, next) => {
   //AppError class for error handler object

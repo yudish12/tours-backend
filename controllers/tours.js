@@ -155,7 +155,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
   query = query.skip(skip).limit(limit);
 
   //execute query
-  const tour = await query;
+  const tour = await query.explain();
   res.status(200).json({
     message: 'success',
     data: tour,
@@ -172,7 +172,7 @@ const createTour = catchAsync(async (req, res, next) => {
 
 const getTour = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const tour = await tours.find({ id: id * 1 });
+  const tour = await tours.findById(id).populate('reviews');
   res.status(200).json({
     message: 'Success',
     data: tour,
@@ -183,7 +183,7 @@ const updateTour = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const body = req.body;
 
-  const tour = await tours.findOneAndUpdate({ id: id * 1 }, body, {
+  const tour = await tours.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true,
   });
@@ -195,7 +195,7 @@ const deleteTour = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const body = req.body;
 
-  const tour = await tours.findOneAndDelete({ id: id * 1 });
+  const tour = await tours.findByIdAndDelete(id);
 
   return res.status(200).json(tour);
 });

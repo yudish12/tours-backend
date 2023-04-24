@@ -30,6 +30,7 @@ const tours_schema = new Schema(
       max: 5,
       min: 0,
       default: 3,
+      set: (val) => Math.round(val * 10) / 10,
     },
     ratingsQuantity: {
       type: Number,
@@ -60,6 +61,35 @@ const tours_schema = new Schema(
       type: Boolean,
       default: false,
     },
+    guides: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -67,8 +97,19 @@ const tours_schema = new Schema(
   }
 );
 
+tours_schema.index({ price: 1, ratingsAverage: -1 });
+
+tours_schema.index({ slug: 1 });
+
 tours_schema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+//populating reviews virtually
+tours_schema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
 
 //Document Middleware runs before .save() and .create() but not on .insertMany()
@@ -80,6 +121,14 @@ tours_schema.pre('save', function (next) {
 //Query middleware runs before .find()
 tours_schema.pre('find', function (next) {
   this.find({ secretTour: { $ne: true } });
+  next();
+});
+
+tours_schema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: 'name email _id',
+  });
   next();
 });
 

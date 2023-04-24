@@ -7,35 +7,35 @@ const router = express.Router();
 
 router.param('id', controller.checkID);
 
+//not logged in
 router.route('/signup').post(authController.signupController);
 router.route('/login').post(authController.loginController);
 router.route('/forgotPassword').post(authController.passwordForget);
 router.route('/resetPassword/:token').patch(authController.resetPassword);
-router
-  .route('/updateMypassword')
-  .patch(authController.authMiddleware, authController.updatePassword);
 
-router
-  .route('/updateMe')
-  .patch(authController.authMiddleware, controller.updateMe);
+router.use(authController.authMiddleware);
+//logged in
 
-router
-  .route('/deleteMe')
-  .patch(authController.authMiddleware, controller.deleteMe);
+router.route('/updateMypassword').patch(authController.updatePassword);
+
+router.route('/getMe').get(controller.getMe);
+
+router.route('/updateMe').patch(controller.updateMe);
+
+router.route('/deleteMe').patch(controller.deleteMe);
+
+router.use(authController.roleMiddleware('admin', 'lead-guide'));
+//admin and lead guide routes
 
 router
   .route('/')
-  .get(authController.authMiddleware, controller.getAllUsers)
+  .get(controller.getAllUsers)
   .post(controller.checkBody, controller.createUser);
 
 router
   .route('/:id')
-  .get(authController.authMiddleware, controller.getUser)
+  .get(controller.getUser)
   .patch(controller.updateUser)
-  .delete(
-    authController.authMiddleware,
-    authController.roleMiddleware('admin', 'lead-guide'),
-    controller.deleteUser
-  );
+  .delete(controller.deleteUser);
 
 module.exports = router;

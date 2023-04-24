@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const { type } = require('os');
 
 const user_schema = new Schema(
   {
@@ -52,16 +53,6 @@ const user_schema = new Schema(
       select: false,
       default: true,
     },
-    startLocation: {
-      type: {
-        type: String,
-        default: 'Point',
-        enum: ['Point'],
-      },
-      coordinates: [Number],
-      address: String,
-      description: String,
-    },
   },
   {
     toJSON: { virtuals: true },
@@ -70,6 +61,7 @@ const user_schema = new Schema(
 );
 
 user_schema.methods.matchPasswords = async function (enteredPassword) {
+  console.log(this);
   console.log(enteredPassword, this.password);
 
   return await bcrypt.compare(enteredPassword, this.password);

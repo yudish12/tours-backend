@@ -30,12 +30,15 @@ const signupController = catchAsync(async (req, res, next) => {
 
 const loginController = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-
+  console.log(email);
   if (!email || !password) {
     next(new AppError('Missing Email or Password'));
   }
 
   const User = await user.find({ email: email }).select('+password');
+  // if (User) {
+  //   return res.json({ token: jwtFunc.signToken(User[0], res), User: User[0] });
+  // }
 
   if (User && (await User[0].matchPasswords(password))) {
     const userObj = {
