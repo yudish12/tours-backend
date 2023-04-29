@@ -34,4 +34,16 @@ const getSignupForm = catchAsync(async (req, res) => {
   });
 });
 
-module.exports = { getOverview, getTour, getLoginForm, getSignupForm };
+const getAccount = catchAsync(async (req, res, next) => {
+  res.status(200).render('account', {
+    title: 'Your account',
+  });
+});
+
+module.exports = {
+  getOverview,
+  getTour,
+  getLoginForm,
+  getSignupForm,
+  getAccount,
+};

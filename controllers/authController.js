@@ -88,6 +88,7 @@ const authMiddleware = catchAsync(async (req, res, next) => {
   }
 
   req.user = User;
+  res.locals.user = User;
   next();
 });
 

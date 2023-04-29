@@ -1,17 +1,16 @@
 const express = require('express');
 
 const controllers = require('../controllers/viewController');
-const { isLoggedIn } = require('../controllers/authController');
+const { isLoggedIn, authMiddleware } = require('../controllers/authController');
 
 const router = express.Router();
 
-router.use(isLoggedIn);
+router.get('/', isLoggedIn, controllers.getOverview);
 
-router.get('/', controllers.getOverview);
+router.get('/tour/:slug', isLoggedIn, controllers.getTour);
 
-router.get('/tour/:slug', controllers.getTour);
-
-router.get('/login', controllers.getLoginForm);
-router.get('/signup', controllers.getSignupForm);
+router.get('/login', isLoggedIn, controllers.getLoginForm);
+router.get('/signup', isLoggedIn, controllers.getSignupForm);
+router.get('/me', authMiddleware, controllers.getAccount);
 
 module.exports = router;

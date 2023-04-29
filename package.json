@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "ndb app.js",
-    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url .",
+    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url ."
   },
   "keywords": [],
   "author": "",
@@ -35,6 +35,6 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "parcel": "^1.12.3"
+    "parcel-bundler": "^1.12.5"
   }
 }
