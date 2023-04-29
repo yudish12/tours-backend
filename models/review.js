@@ -83,10 +83,12 @@ review_schema.index(
 // });
 
 review_schema.pre(/^find/, function (next) {
+  console.log(this);
   this.populate({
     path: 'user',
     select: 'name email _id photo',
   });
+
   next();
 });
 

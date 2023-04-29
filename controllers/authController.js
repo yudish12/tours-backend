@@ -30,7 +30,6 @@ const signupController = catchAsync(async (req, res, next) => {
 
 const loginController = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email);
   if (!email || !password) {
     next(new AppError('Missing Email or Password'));
   }
@@ -66,6 +65,8 @@ const authMiddleware = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -89,6 +90,39 @@ const authMiddleware = catchAsync(async (req, res, next) => {
   req.user = User;
   next();
 });
+
+const logout = (req, res) => {
+  console.log('x');
+  res.cookie('jwt', 'logged out', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httponly: true,
+  });
+  res.status(200).json({ message: 'Success' });
+};
+
+const isLoggedIn = async (req, res, next) => {
+  try {
+    if (req.cookies.jwt) {
+      const decoded = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+
+      const User = await user.findById(decoded.obj._id).select('-password');
+      if (!User) {
+        return next();
+      }
+
+      if (User.changedPasswordAfter(decoded.iat)) {
+        return next();
+      }
+
+      res.locals.user = User;
+      return next();
+    }
+  } catch (error) {
+    return next();
+  }
+
+  next();
+};
 
 const roleMiddleware = (...roles) => {
   return async (req, res, next) => {
@@ -211,4 +245,6 @@ module.exports = {
   passwordForget,
   resetPassword,
   updatePassword,
+  isLoggedIn,
+  logout,
 };

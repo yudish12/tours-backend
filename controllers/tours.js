@@ -1,4 +1,5 @@
 const tours = require('../models/tours');
+const users = require('../models/users');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -174,6 +175,10 @@ const createTour = catchAsync(async (req, res, next) => {
 const getTour = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const tour = await tours.findById(id).populate('reviews');
+
+  const guidInfo = await users.findOne({ _id: '5c8a22c62f8fb814b56fa18b' });
+  console.log(guidInfo);
+
   res.status(200).json({
     message: 'Success',
     data: tour,

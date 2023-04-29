@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -6,6 +7,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 dotenv.config({ path: './.env' });
 
@@ -26,10 +28,28 @@ mongoose
 const toursRoutes = require('./routes/tours');
 const userRoutes = require('./routes/users');
 const reviewRoutes = require('./routes/reviews');
+const viewRoutes = require('./routes/viewRoutes');
 
 const app = express();
 
-app.use(helmet());
+app.use(cookieParser());
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+  console.log(req.cookies);
+  next();
+});
+
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
 app.use(
   hpp({
     whitelist: [
@@ -65,11 +85,29 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
+// app.get('/', (req, res) => {
+//   res.status(200).render('base', {
+//     tour: 'this is tour name',
+//     lead: 'Lead',
+//     title: 'Home',
+//   });
+// });
+
+// app.get('/overview', (req, res) => {
+
+// });
+
+// app.get('/tour', (req, res) => {
+
+// });
+
 app.use('/api/v1/tours', toursRoutes);
 
 app.use('/api/v1/users', userRoutes);
 
 app.use('/api/v1/reviews', reviewRoutes);
+
+app.use('/', viewRoutes);
 
 app.all('*', (req, res, next) => {
   //AppError class for error handler object

@@ -6,7 +6,7 @@ const authController = require('../controllers/authController');
 const router = express.Router();
 
 router.use(authController.authMiddleware);
-router.use(authController.roleMiddleware('user'));
+router.use(authController.roleMiddleware('admin', 'user'));
 
 router
   .route('/:reviewId')

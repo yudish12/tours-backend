@@ -1,0 +1,27 @@
+doctype html
+html
+    block head
+        head
+            meta(charset="UTF-8")/
+            meta(name="viewport" content="width=device-width, initial-scale=1.0")/
+            title Natours | #{title}
+            link(rel="stylesheet", href="/css/style.css")
+            link(rel="shortcut icon", href="/img/favicon.png", type="image/png")
+            link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
+            script(src='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js')
+            link(href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet')
+        body  
+            //header
+            include _header
+
+            //content
+            block content
+                h1 this is a placeholder
+
+            //footer
+            include _footer
+        script(type="module" src="/js/bundle.js") 
+        //- script(src="/mapbox.js") 
+        //- script(src="/login.js") 
+        //- script(src="/signup.js") 
+        

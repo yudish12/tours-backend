@@ -449,6 +449,7 @@ body {
   font-size: 1.7rem;
 }
 .description-box .description__text:not(:last-child) {
+  letter-spacing: 2px;
   margin-bottom: 2rem;
 }
 
@@ -457,6 +458,8 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  flex-direction: column;
+  gap: 6rem;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
@@ -493,6 +496,7 @@ body {
 }
 .overview-box__text {
   text-transform: capitalize;
+  font-size: 1.8rem;
 }
 .overview-box__img {
   border-radius: 50%;

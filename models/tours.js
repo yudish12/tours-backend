@@ -120,17 +120,18 @@ tours_schema.pre('save', function (next) {
   next();
 });
 
-//Query middleware runs before .find()
-tours_schema.pre('find', function (next) {
-  this.find({ secretTour: { $ne: true } });
-  next();
-});
-
 tours_schema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
-    select: 'name email _id',
+    select: 'name email _id photo role',
   });
+  next();
+});
+
+//Query middleware runs before .find()
+tours_schema.pre('find', function (next) {
+  // console.log(this);
+  this.find({ secretTour: { $ne: true } });
   next();
 });
 
