@@ -101,6 +101,8 @@ tours_schema.index({ price: 1, ratingsAverage: -1 });
 
 tours_schema.index({ slug: 1 });
 
+tours_schema.index({ startLocation: '2dsphere' });
+
 tours_schema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
@@ -134,7 +136,12 @@ tours_schema.pre(/^find/, function (next) {
 
 //aggregation middleware runs before .aggregate
 tours_schema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  const obj = this.pipeline()[0];
+
+  if (Object.keys(obj)[0] !== '$geoNear') {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  }
+
   next();
 });
 

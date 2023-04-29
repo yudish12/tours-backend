@@ -19,6 +19,13 @@ router
     controllers.createTour
   );
 
+//tours-within/120/center/-40,45/unit/mi
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(controllers.getToursWithin);
+
+router.route('/distance/center/:latlng/unit/mi').get(controllers.getDistances);
+
 router
   .route('/monthly-plan/:year')
   .get(
