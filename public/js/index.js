@@ -10,6 +10,7 @@ const mapBox = document.getElementById('map');
 const Loginform = document.querySelector('.loginForm');
 const Signupform = document.querySelector('.signupForm');
 const updateForm = document.querySelector('.form-user-data');
+const passwordUpdateForm = document.querySelector('.form-user-settings');
 const logoutBtn = document.querySelector('.nav__el--logout');
 
 if (mapBox) {
@@ -48,6 +49,18 @@ if (updateForm) {
     e.preventDefault();
     const email = updateForm.elements['email'].value;
     const name = updateForm.elements['name'].value;
-    update(email, name);
+    update({ email, name }, 'updateMe');
+  });
+}
+
+if (passwordUpdateForm) {
+  passwordUpdateForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const password = passwordUpdateForm.elements['password-current'].value;
+    const newPassword = passwordUpdateForm.elements['password'].value;
+    const confirmNewPassword =
+      passwordUpdateForm.elements['password-confirm'].value;
+
+    update({ password, newPassword, confirmNewPassword }, 'password');
   });
 }

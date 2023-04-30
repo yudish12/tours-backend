@@ -10,7 +10,7 @@ const user_schema = new Schema(
     name: {
       type: String,
       required: [true, 'User Must have a name'],
-      validate: validator.isAlpha,
+      // validate: validator.isAlpha,
     },
     password: {
       type: String,

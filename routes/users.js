@@ -17,7 +17,9 @@ router.route('/resetPassword/:token').patch(authController.resetPassword);
 router.use(authController.authMiddleware);
 //logged in
 
-router.route('/updateMypassword').patch(authController.updatePassword);
+router
+  .route('/updateMypassword')
+  .patch(authController.authMiddleware, authController.updatePassword);
 
 router.route('/getMe').get(controller.getMe);
 

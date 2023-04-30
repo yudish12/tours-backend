@@ -209,8 +209,8 @@ const resetPassword = catchAsync(async (req, res, next) => {
 });
 
 const updatePassword = catchAsync(async (req, res, next) => {
-  const { email, password, newPassword, confirmNewPassword } = req.body;
-
+  const { password, newPassword, confirmNewPassword } = req.body;
+  const email = req.user.email;
   const User = await user.findOne({ email: email }).select('+password');
 
   if (!User || !(await User.matchPasswords(password))) {
