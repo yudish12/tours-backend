@@ -40,6 +40,8 @@ router
   .patch(
     authController.authMiddleware,
     authController.roleMiddleware('admin', 'lead-guide'),
+    controllers.uploadTourImages,
+    controllers.resizeTourImages,
     controllers.updateTour
   )
   .delete(

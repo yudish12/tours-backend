@@ -12,18 +12,24 @@ router.route('/signup').post(authController.signupController);
 router.route('/login').post(authController.loginController);
 router.route('/logout').get(authController.logout);
 router.route('/forgotPassword').post(authController.passwordForget);
-router.route('/resetPassword/:token').patch(authController.resetPassword);
+router
+  .route('/resetPassword/:token')
+  .patch(authController.resetPassword, authController.updateForgotPassword);
 
 router.use(authController.authMiddleware);
 //logged in
 
-router
-  .route('/updateMypassword')
-  .patch(authController.authMiddleware, authController.updatePassword);
+router.route('/updateMypassword').patch(authController.updatePassword);
 
 router.route('/getMe').get(controller.getMe);
 
-router.route('/updateMe').patch(controller.updateMe);
+router
+  .route('/updateMe')
+  .patch(
+    controller.uploadUserPhoto,
+    controller.resizeUserPhoto,
+    controller.updateMe
+  );
 
 router.route('/deleteMe').patch(controller.deleteMe);
 

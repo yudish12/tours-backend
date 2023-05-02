@@ -39,11 +39,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-  console.log(req.cookies);
-  next();
-});
-
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -69,6 +64,7 @@ app.use(xss()); //filters out xss cross server scripting code hence prevents cro
 const morgan = require('morgan');
 
 app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: false }));
 
 app.use(morgan('dev'));
 

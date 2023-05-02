@@ -40,10 +40,17 @@ const getAccount = catchAsync(async (req, res, next) => {
   });
 });
 
+const getForgotPassword = catchAsync(async (req, res, next) => {
+  res.status(200).render('forgotPassword', {
+    title: 'Reset Password',
+  });
+});
+
 module.exports = {
   getOverview,
   getTour,
   getLoginForm,
   getSignupForm,
+  getForgotPassword,
   getAccount,
 };

@@ -5,6 +5,7 @@ const jwtFunc = require('../utils/jwtFunc');
 const AppError = require('../utils/appError');
 const emailFunc = require('../utils/email');
 const crypto = require('crypto');
+const Email = require('../utils/email');
 
 const signupController = catchAsync(async (req, res, next) => {
   const User = new user({
@@ -14,6 +15,11 @@ const signupController = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
   const data = await User.save();
+
+  // const url = `http://localhost:5000/me`;
+  const url = `${req.protocol}://${req.get('host')}/me`;
+
+  await new Email(User, url).sendWelcome();
 
   const userObj = {
     _id: data._id,
@@ -146,17 +152,15 @@ const passwordForget = catchAsync(async (req, res, next) => {
   const resetToken = User.createResetToken();
   const data = await User.save({ validateBeforeSave: false });
 
-  let url = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
+  let url = `${req.protocol}://${req.get('host')}/forgotPassword/${resetToken}`;
 
-  const message = `Forgot your password? Set a new password by clicking on this link ${url} If you didnt forgot your password please ignore this message`;
   try {
-    await emailFunc({
-      email: User.email,
-      subject: 'Your password reset token (valid for 10 minutes)',
-      message,
-    });
+    // await emailFunc({
+    //   email: User.email,
+    //   subject: 'Your password reset token (valid for 10 minutes)',
+    //   message,
+    // });
+    await new Email(User, url).sendPasswordReset();
 
     res.status(200).json({
       status: 'success',
@@ -189,7 +193,28 @@ const resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError('Token is invalid or expired', 404));
   }
 
-  console.log(User);
+  req.user = User;
+
+  next();
+
+  // User.password = req.body.password;
+  // User.passwordConfirm = req.body.passwordConfirm;
+  // User.resetToken = undefined;
+  // User.resetTokenExpires = undefined;
+  // await User.save();
+
+  // const token = jwtFunc.signToken(User, res);
+
+  // res.status(200).json({
+  //   message: 'Password changed sucessfully',
+  //   token,
+  // });
+});
+
+const updateForgotPassword = catchAsync(async (req, res, next) => {
+  const email = req.user.email;
+
+  const User = await user.findOne({ email });
 
   User.password = req.body.password;
   User.passwordConfirm = req.body.passwordConfirm;
@@ -197,14 +222,11 @@ const resetPassword = catchAsync(async (req, res, next) => {
   User.resetTokenExpires = undefined;
   await User.save();
 
-  console.log(User);
-
   const token = jwtFunc.signToken(User, res);
 
   res.status(200).json({
     message: 'Password changed sucessfully',
     token,
-    data: User,
   });
 });
 
@@ -245,6 +267,7 @@ module.exports = {
   roleMiddleware,
   passwordForget,
   resetPassword,
+  updateForgotPassword,
   updatePassword,
   isLoggedIn,
   logout,

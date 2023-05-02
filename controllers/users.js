@@ -1,9 +1,39 @@
 const users = require('../models/users');
 const catchAsync = require('../utils/catchAsync');
+const multer = require('multer');
+const sharp = require('sharp');
+
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = file.mimetype.split('/')[1];
+//     cb(null, `user-${req.user._id}-${Date.now()}.${ext}`);
+//   },
+// });
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (
+    file.mimetype.split('/')[1] === 'jpg' ||
+    file.mimetype.split('/')[1] === 'jpeg' ||
+    file.mimetype.split('/')[1] === 'png'
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error('This extension is not supported'), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
 
 const filterObj = (obj, ...fields) => {
   const newObj = {};
-  console.log(obj);
   Object.keys(obj).forEach((el) => {
     if (fields.includes(el)) newObj[el] = obj[el];
   });
@@ -94,6 +124,8 @@ const deleteMe = catchAsync(async (req, res, next) => {
 const updateMe = catchAsync(async (req, res, next) => {
   const obj = filterObj(req.body, 'name', 'email');
 
+  if (req.file) obj.photo = req.file.filename;
+
   const User = await users.findByIdAndUpdate(req.user._id, obj, {
     new: true,
     runValidators: true,
@@ -112,6 +144,29 @@ const updateUser = (req, res) => {
   });
 };
 
+const uploadUserPhoto = upload.single('photo');
+// const uploadUserPhoto = (req, res, next) => {
+//   console.log(upload);
+//   upload.single('photo');
+//   console.log(req.body);
+//   next();
+// };
+
+const resizeUserPhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) {
+    return next();
+  }
+
+  req.file.filename = `user-${req.user._id}-${Date.now()}.jpg`;
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+  next();
+});
+
 module.exports = {
   getAllUsers,
   getUser,
@@ -122,5 +177,7 @@ module.exports = {
   updateMe,
   deleteMe,
   checkBody,
+  uploadUserPhoto,
+  resizeUserPhoto,
   getMe,
 };

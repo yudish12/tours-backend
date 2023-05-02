@@ -47,6 +47,7 @@ const user_schema = new Schema(
     resetTokenExpires: Date,
     photo: {
       type: String,
+      default: 'default.jpg',
     },
     active: {
       type: Boolean,
