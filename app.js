@@ -28,6 +28,7 @@ mongoose
 const toursRoutes = require('./routes/tours');
 const userRoutes = require('./routes/users');
 const reviewRoutes = require('./routes/reviews');
+const bookingRoutes = require('./routes/bookingRoutes');
 const viewRoutes = require('./routes/viewRoutes');
 
 const app = express();
@@ -102,6 +103,8 @@ app.use('/api/v1/tours', toursRoutes);
 app.use('/api/v1/users', userRoutes);
 
 app.use('/api/v1/reviews', reviewRoutes);
+
+app.use('/api/v1/bookings', bookingRoutes);
 
 app.use('/', viewRoutes);
 

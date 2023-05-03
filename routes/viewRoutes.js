@@ -6,10 +6,11 @@ const {
   authMiddleware,
   resetPassword,
 } = require('../controllers/authController');
+const { createBooking } = require('../controllers/BookingController');
 
 const router = express.Router();
 
-router.get('/', isLoggedIn, controllers.getOverview);
+router.get('/', createBooking, isLoggedIn, controllers.getOverview);
 
 router.get('/tour/:slug', isLoggedIn, controllers.getTour);
 
@@ -21,5 +22,7 @@ router.get(
   resetPassword,
   controllers.getForgotPassword
 );
+
+router.get('/my-tours', authMiddleware, controllers.getMytours);
 
 module.exports = router;

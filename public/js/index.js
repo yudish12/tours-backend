@@ -5,6 +5,7 @@ import { signUp } from './signup.js';
 import { update } from './updateMe.js';
 import { forgotHandler } from './forgotPassword.js';
 import { resetHandler } from './ResetPass.js';
+import { bookTour } from './stripe.js';
 console.log('x');
 
 const mapBox = document.getElementById('map');
@@ -17,6 +18,7 @@ const forgotPasswordFormBtn = document.querySelector('.forgotPassword-form h3');
 const closePopup = document.querySelector('.closePopup');
 const forgotPasswordForm = document.querySelector('.forgotPasswordForm');
 const newPasswordForm = document.querySelector('.NewPass');
+const bookBtn = document.getElementById('book-tour');
 
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.Locations);
@@ -115,5 +117,13 @@ if (newPasswordForm) {
     const password = newPasswordForm.elements['password'].value;
     const passwordConfirm = newPasswordForm.elements['passwordConfirm'].value;
     resetHandler(password, passwordConfirm);
+  });
+}
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', (e) => {
+    e.target.textContent = 'Processing...';
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
   });
 }
