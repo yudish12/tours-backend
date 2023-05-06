@@ -1,0 +1,40 @@
+extend base
+
+block content
+
+    .title
+        h1 Ratings and Reviews
+    .AddReview
+        .Reviewleft
+            h3 Your review should be about your experience of the tour
+            .questions
+                h2 Why review a tour?
+                p Your valuable feedback will help people in buying tours
+                h2 How to review a product
+                p
+                    | Your review should include facts. An honest opinion is always
+                    | appreciated. If you have an issue with the product or service please
+                    | mention in review
+        .Reviewright
+            h2 Review this tour
+            form.reviewForm
+                .ratings
+                    h3 Rate this tour
+                    i.fa-solid.fa-star.icon.active
+                    i.fa-solid.fa-star.icon
+                    i.fa-solid.fa-star.icon
+                    i.fa-solid.fa-star.icon
+                    i.fa-solid.fa-star.icon
+                .reviewDescription
+                    h2  Describe Your experience 
+                    .form-group
+                        label(for='description') Share your experience
+                        textarea#description(type='text' cols='70' rows='7')
+                    .form-group
+                        label(for='user-name') Name
+                        input#user-name(type='text')
+                    .form-group
+                        label(for='photo') Choose new photo 
+                        input#photo(type='file' accept='image/*' name='photo')
+                    .form__group
+                        button.btn.btn--green Submit    

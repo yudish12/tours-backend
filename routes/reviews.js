@@ -13,7 +13,15 @@ router
   .patch(controllers.updateReview)
   .delete(controllers.deleteReview);
 
+//CREATE un approved reviews
+router.route('/').post(controllers.createReview);
+
 router.use(authController.roleMiddleware('admin', 'lead-guide'));
-router.route('/').get(controllers.getAllReviews).post(controllers.createReview);
+//GET ALL REVIEWS
+router.route('/').get(controllers.getAllReviews);
+
+//APPROVE REVIEW
+router.route('/approve/:id').patch(controllers.approveReview);
+router.route('/decline/:id').patch(controllers.declineReview);
 
 module.exports = router;

@@ -15,17 +15,16 @@ export const Login = async (email, password) => {
       }, 500);
     }
   } catch (error) {
-    showAlert('error', error);
+    console.log(error);
+    showAlert('error', error.response.data.message);
   }
 };
 
 export const logout = async () => {
   try {
     const res = await axios.get('http://localhost:5000/api/v1/users/logout');
-    console.log(res);
     if (res.data.message === 'Success') location.reload(true);
   } catch (error) {
-    console.log(error);
     showAlert('error', 'error logging out! Please try again');
   }
 };

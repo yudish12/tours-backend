@@ -10,13 +10,16 @@ export const forgotHandler = async (email) => {
       }
     );
     if (res.data.status === 'success') {
-      showAlert('success', 'Email Sent successfully.Please check your inbox');
-      //   window.setTimeout(() => {
-      //     location.reload(true);
-      //   }, 5000);
+      showAlert(
+        'success',
+        'Email Sent successfully.Please check your inbox and spam section'
+      );
+      window.setTimeout(() => {
+        location.reload(true);
+      }, 3000);
     }
   } catch (error) {
     console.log(error);
-    showAlert('error', error);
+    showAlert('error', error.response.message);
   }
 };

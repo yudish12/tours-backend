@@ -83,7 +83,11 @@ block content
     section.section-reviews
         .reviews
             each review in tourData.reviews
-                +reviewCard(review)
+                if review.approved===true
+                    +reviewCard(review)
+        if user
+            .addReviewBtnContainer
+                a.btn.btn--green.span-all-rows#review-tour(href=`/addMyReview/${tourData._id}`) Share Your Experience        
         section.section-cta
             .cta
                 .cta__img.cta__img--logo

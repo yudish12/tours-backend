@@ -21,6 +21,6 @@ export const resetHandler = async (password, passwordConfirm) => {
     }
   } catch (error) {
     console.log(error);
-    showAlert('error', error);
+    showAlert('error', error.response.message);
   }
 };

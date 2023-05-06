@@ -1,5 +1,6 @@
 const Booking = require('../models/bookings');
 const tours = require('../models/tours');
+const reviews = require('../models/review');
 const catchAsync = require('../utils/catchAsync');
 
 const getOverview = catchAsync(async (req, res) => {
@@ -60,12 +61,56 @@ const getMytours = catchAsync(async (req, res, next) => {
   });
 });
 
+const getMyReviewPage = catchAsync(async (req, res, next) => {
+  res.status(200).render('review', {
+    title: 'Share Your Experience',
+  });
+});
+
+const canAddReview = catchAsync(async (req, res, next) => {
+  const bookingIds = await Booking.find({
+    $and: [{ user: req.user._id }, { tour: req.params.tourId }],
+  });
+
+  if (bookingIds.length === 0) {
+    return res.render('error', {
+      title: 'Bad Request',
+      code: 400,
+      message: 'User Must buy a tour before reviewing it',
+    });
+  }
+
+  next();
+});
+
+const getMyReviews = catchAsync(async (req, res, next) => {
+  const reviewsArr = await reviews.find({ user: req.user._id });
+
+  res.status(200).render('myReviews', {
+    title: `${req.user.name}'s reviews`,
+    reviewsArr,
+  });
+});
+
+const manageReviewPage = catchAsync(async (req, res, next) => {
+  const reviewsArr = await reviews.find({ approved: false });
+
+  res.status(200).render('adminReviews', {
+    title: 'Manage Reviews',
+    reviewsArr,
+  });
+});
+
 module.exports = {
   getOverview,
   getTour,
   getLoginForm,
   getSignupForm,
+  getMyReviewPage,
   getForgotPassword,
   getMytours,
   getAccount,
+  canAddReview,
+  getMyReviews,
+  manageReviewPage,
 };

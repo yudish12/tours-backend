@@ -29,6 +29,10 @@ const review_schema = mongoose.Schema(
       ref: 'User',
       required: [true, 'review must belong to a user'],
     },
+    approved: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -55,7 +59,8 @@ review_schema.statics.calcAverageRatings = async function (tourId) {
 };
 
 review_schema.post('save', async function () {
-  await this.constructor.calcAverageRatings(this.tour);
+  if (this.approved === true)
+    await this.constructor.calcAverageRatings(this.tour);
 });
 
 review_schema.index(

@@ -6,6 +6,8 @@ import { update } from './updateMe.js';
 import { forgotHandler } from './forgotPassword.js';
 import { resetHandler } from './ResetPass.js';
 import { bookTour } from './stripe.js';
+import { postReview } from './postReview.js';
+import { reviewManage } from './reviewManager.js';
 console.log('x');
 
 const mapBox = document.getElementById('map');
@@ -19,6 +21,10 @@ const closePopup = document.querySelector('.closePopup');
 const forgotPasswordForm = document.querySelector('.forgotPasswordForm');
 const newPasswordForm = document.querySelector('.NewPass');
 const bookBtn = document.getElementById('book-tour');
+const stars = document.querySelectorAll('.icon');
+const reviewForm = document.querySelector('.reviewForm');
+const trash = document.querySelectorAll('.bin');
+const check = document.querySelectorAll('.check');
 
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.Locations);
@@ -125,5 +131,56 @@ if (bookBtn) {
     e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
     bookTour(tourId);
+  });
+}
+
+if (stars) {
+  stars.forEach((star, ind1) => {
+    star.addEventListener('click', () => {
+      console.log(star);
+      stars.forEach((star, ind2) => {
+        ind1 >= ind2
+          ? star.classList.add('active')
+          : star.classList.remove('active');
+      });
+    });
+  });
+}
+
+if (reviewForm) {
+  reviewForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const review = reviewForm.elements['description'].value;
+    const starIcons = document.querySelectorAll('.icon');
+    let rating = 0;
+    starIcons.forEach((star, ind) => {
+      if (star.classList.contains('active')) {
+        rating++;
+      }
+    });
+
+    const tour = window.location.href.split('/')[4];
+    console.log(tour);
+    postReview(review, rating, tour);
+  });
+}
+
+if (check) {
+  check.forEach((e) => {
+    e.addEventListener('click', (el) => {
+      el.preventDefault();
+      const reviewId = e.dataset.Reviewid;
+      reviewManage('approve', reviewId);
+    });
+  });
+}
+
+if (trash) {
+  trash.forEach((e) => {
+    e.addEventListener('click', (el) => {
+      el.preventDefault();
+      const reviewId = e.dataset.Reviewid;
+      reviewManage('decline', reviewId);
+    });
   });
 }

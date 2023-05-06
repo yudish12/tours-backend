@@ -84,4 +84,34 @@ const deleteReview = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { getAllReviews, createReview, updateReview, deleteReview };
+const approveReview = catchAsync(async (req, res, next) => {
+  const reviewId = req.params.id;
+  const reviewData = await reviews.findByIdAndUpdate(
+    reviewId,
+    { approved: true },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Review Approved Successfully',
+  });
+});
+const declineReview = catchAsync(async (req, res, next) => {
+  const reviewId = req.params.id;
+  await reviews.findByIdAndDelete(reviewId);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Review Declined and Deleted Successfully',
+  });
+});
+
+module.exports = {
+  getAllReviews,
+  createReview,
+  updateReview,
+  deleteReview,
+  approveReview,
+  declineReview,
+};

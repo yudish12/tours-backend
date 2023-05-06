@@ -170,6 +170,7 @@ const passwordForget = catchAsync(async (req, res, next) => {
     User.resetToken = undefined;
     User.resetTokenExpires = undefined;
     User.save();
+    console.log(error);
     next(
       new AppError(
         'something went wrong while sending email please try again later',
@@ -236,7 +237,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
   const User = await user.findOne({ email: email }).select('+password');
 
   if (!User || !(await User.matchPasswords(password))) {
-    next(new AppError('Please provide correct email and password'), 401);
+    return next(new AppError('Please provide correct email and password'), 401);
   }
 
   User.password = newPassword;

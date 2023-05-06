@@ -5,6 +5,7 @@ const {
   isLoggedIn,
   authMiddleware,
   resetPassword,
+  roleMiddleware,
 } = require('../controllers/authController');
 const { createBooking } = require('../controllers/BookingController');
 
@@ -24,5 +25,17 @@ router.get(
 );
 
 router.get('/my-tours', authMiddleware, controllers.getMytours);
+router.get(
+  '/addMyReview/:tourId',
+  authMiddleware,
+  controllers.canAddReview,
+  controllers.getMyReviewPage
+);
+router.get('/my-reviews', authMiddleware, controllers.getMyReviews);
+
+router.use(authMiddleware);
+router.use(roleMiddleware('admin', 'lead-guide'));
+
+router.get('/manageReview', controllers.manageReviewPage);
 
 module.exports = router;

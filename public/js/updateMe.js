@@ -20,6 +20,6 @@ export const update = async (data, type) => {
       }, 500);
     }
   } catch (error) {
-    showAlert('error', error);
+    showAlert('error', error.response.data.message);
   }
 };
