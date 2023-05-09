@@ -1742,3 +1742,47 @@ body {
   gap: 2rem;
   height: 60vh;
 }
+.slider {
+  width: 60%;
+  height: 500px;
+  margin: auto;
+  margin-top: 100px;
+  box-shadow: 0px 0px 3px grey;
+  position: relative;
+  overflow: hidden;
+}
+.mySlides {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: 1s;
+}
+.mySlides img {
+  width: 875px;
+  height: 500px;
+}
+.sliderBtn {
+  text-align: center;
+  margin-top: 15px;
+  position: relative;
+}
+.sliderBtn .prev {
+  z-index: 3;
+  position: absolute;
+  left: 30rem;
+  top: -28rem;
+  background-color: #20bf6b;
+  width: 40px;
+  color: white;
+  font-size: 3rem;
+}
+.sliderBtn .next {
+  z-index: 3;
+  position: absolute;
+  background-color: #20bf6b;
+  color: white;
+  right: 30rem;
+  width: 40px;
+  top: -29rem;
+  font-size: 3rem;
+}

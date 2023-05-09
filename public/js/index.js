@@ -25,6 +25,9 @@ const stars = document.querySelectorAll('.icon');
 const reviewForm = document.querySelector('.reviewForm');
 const trash = document.querySelectorAll('.bin');
 const check = document.querySelectorAll('.check');
+const slides = document.querySelectorAll('.mySlides');
+const next = document.querySelector('.next');
+const prev = document.querySelector('.prev');
 
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.Locations);
@@ -182,5 +185,40 @@ if (trash) {
       const reviewId = e.dataset.Reviewid;
       reviewManage('decline', reviewId);
     });
+  });
+}
+
+if (slides) {
+  var counter = 0;
+  slides.forEach((e, i) => {
+    e.style.left = `${i * 100}%`;
+  });
+
+  const slideImage = () => {
+    slides.forEach((slide) => {
+      console.log(counter);
+      const x = slide.style.left;
+      slide.style.transform = `translateX(-${counter * 100}%)`;
+      console.log(slide);
+    });
+  };
+
+  const goPrev = () => {
+    counter = (counter + 4) % 5;
+    slideImage();
+  };
+
+  const goNext = () => {
+    console.log('xcas');
+    counter = (counter + 1) % 5;
+    slideImage();
+  };
+
+  next.addEventListener('click', () => {
+    goNext();
+  });
+
+  prev.addEventListener('click', () => {
+    goPrev();
   });
 }

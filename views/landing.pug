@@ -1,0 +1,12 @@
+extends base
+block content
+    .slider
+        each tour in response
+            .mySlides.fade
+                img(src=`/img/tours/${tour.imageCover}`)
+                .text
+                    a(href='#') wooCommerce &amp; wordpress
+    .sliderBtn
+        a.prev &#x276E;
+        a.next &#x276F;    
+    

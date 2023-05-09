@@ -2,6 +2,17 @@ const Booking = require('../models/bookings');
 const tours = require('../models/tours');
 const reviews = require('../models/review');
 const catchAsync = require('../utils/catchAsync');
+const axios = require('axios');
+
+const showLandingPage = catchAsync(async (req, res) => {
+  const response = await axios.get(
+    'http://localhost:5000/api/v1/tours/top5cheap'
+  );
+  res.status(200).render('landing', {
+    title: 'Welcome to Natours',
+    response: response.data.data,
+  });
+});
 
 const getOverview = catchAsync(async (req, res) => {
   const tourArr = await tours.find();
@@ -113,4 +124,5 @@ module.exports = {
   canAddReview,
   getMyReviews,
   manageReviewPage,
+  showLandingPage,
 };

@@ -62,7 +62,7 @@ const resizeTourImages = catchAsync(async (req, res, next) => {
 const alias = (req, res, next) => {
   req.query.sort = 'price -ratingsAverage';
   req.query.limit = '5';
-  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty,imageCover';
   next();
 };
 
@@ -213,7 +213,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
   query = query.skip(skip).limit(limit);
 
   //execute query
-  const tour = await query.explain();
+  const tour = await query.exec();
   res.status(200).json({
     message: 'success',
     data: tour,

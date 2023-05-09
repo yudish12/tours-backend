@@ -13,6 +13,8 @@ const router = express.Router();
 
 router.get('/', createBooking, isLoggedIn, controllers.getOverview);
 
+router.get('/overview', isLoggedIn, controllers.showLandingPage);
+
 router.get('/tour/:slug', isLoggedIn, controllers.getTour);
 
 router.get('/login', isLoggedIn, controllers.getLoginForm);
