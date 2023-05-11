@@ -107,7 +107,7 @@ const getTourStats = catchAsync(async (req, res, next) => {
   try {
     const stats = await tours.aggregate([
       {
-        $match: { ratingsAverage: { $gte: 4.7 } },
+        $match: { ratingsAverage: { $gte: 4 } },
       },
       {
         $group: {
