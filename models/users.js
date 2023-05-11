@@ -83,7 +83,6 @@ user_schema.methods.createResetToken = function () {
 
   this.resetTokenExpires = Date.now() + 10 * 60 * 1000;
 
-  console.log(resetToken, this.resetToken);
   return resetToken;
 };
 

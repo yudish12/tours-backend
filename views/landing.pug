@@ -1,12 +1,14 @@
 extends base
 block content
+    h2.heading-secondary(style="text-align: center; margin-top:2rem;") Our Top 5 Cheapest tours
     .slider
         each tour in response
             .mySlides.fade
                 img(src=`/img/tours/${tour.imageCover}`)
                 .text
-                    a(href='#') wooCommerce &amp; wordpress
+                    a.slider-text(href=`/tour/${tour.slug}`) #{tour.name}
     .sliderBtn
         a.prev &#x276E;
         a.next &#x276F;    
+    
     

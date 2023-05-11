@@ -1746,7 +1746,7 @@ body {
   width: 60%;
   height: 500px;
   margin: auto;
-  margin-top: 100px;
+  margin-top: 45px;
   box-shadow: 0px 0px 3px grey;
   position: relative;
   overflow: hidden;
@@ -1770,11 +1770,16 @@ body {
   z-index: 3;
   position: absolute;
   left: 30rem;
-  top: -28rem;
+  top: -28.75rem;
   background-color: #20bf6b;
   width: 40px;
   color: white;
   font-size: 3rem;
+}
+.text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .sliderBtn .next {
   z-index: 3;
@@ -1783,6 +1788,20 @@ body {
   color: white;
   right: 30rem;
   width: 40px;
-  top: -29rem;
+  top: -29.5rem;
   font-size: 3rem;
+}
+.slider-text {
+  font-size: 3rem;
+  font-weight: 600;
+  display: flex;
+  background: white;
+  color: #20bf6b;
+  position: absolute;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-top: -50rem;
+  justify-content: center;
+  align-items: center;
+  z-index: 4;
 }
