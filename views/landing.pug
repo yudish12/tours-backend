@@ -1,6 +1,7 @@
 extends base
 block content
-    h2.heading-secondary(style="text-align: center; margin-top:2rem;") Our Top 5 Cheapest tours
+    .title
+        h2.landingHeading(style="text-align: center; margin-top:2rem;") Our Top 5 Cheapest tours
     .slider
         each tour in response
             .mySlides.fade
@@ -9,6 +10,11 @@ block content
                     a.slider-text(href=`/tour/${tour.slug}`) #{tour.name}
     .sliderBtn
         a.prev &#x276E;
-        a.next &#x276F;    
+        a.next &#x276F;  
+    .stats 
+        h2.landingHeading(style="text-align: center; margin-top:2rem;") Stats For year 2023
+        div(style='width: 800px;')
+            canvas#chart
+
     
     

@@ -8,6 +8,8 @@ import { resetHandler } from './ResetPass.js';
 import { bookTour } from './stripe.js';
 import { postReview } from './postReview.js';
 import { reviewManage } from './reviewManager.js';
+import { showChart } from './getStats.js';
+
 console.log('x');
 
 const mapBox = document.getElementById('map');
@@ -28,6 +30,7 @@ const check = document.querySelectorAll('.check');
 const slides = document.querySelectorAll('.mySlides');
 const next = document.querySelector('.next');
 const prev = document.querySelector('.prev');
+const chart = document.getElementById('chart');
 
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.Locations);
@@ -221,4 +224,20 @@ if (slides) {
   prev.addEventListener('click', () => {
     goPrev();
   });
+}
+
+if (chart) {
+  showChart(chart);
+  // new Chart(document.getElementById('acquisitions'), {
+  //   type: 'bar',
+  //   data: {
+  //     labels: data.map((row) => row.year),
+  //     datasets: [
+  //       {
+  //         label: 'Acquisitions by year',
+  //         data: data.map((row) => row.count),
+  //       },
+  //     ],
+  //   },
+  // });
 }

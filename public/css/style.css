@@ -1805,3 +1805,36 @@ body {
   align-items: center;
   z-index: 4;
 }
+.landingHeading {
+  padding: 1rem 1.5rem;
+  font-size: 2.5rem;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
+  line-height: 1;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right bottom,
+    from(rgba(125, 213, 111, 0.85)),
+    to(rgba(40, 180, 135, 0.85))
+  );
+  background-image: linear-gradient(
+    to bottom right,
+    rgba(125, 213, 111, 0.85),
+    rgba(40, 180, 135, 0.85)
+  );
+}
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.stats {
+  margin-top: 6.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
