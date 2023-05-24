@@ -55,7 +55,7 @@ const resizeTourImages = catchAsync(async (req, res, next) => {
       req.body.images.push(filename);
     })
   );
-  console.log(req.body);
+
   next();
 });
 
@@ -91,7 +91,7 @@ const checkID = async (req, res, next, val) => {
     });
   }
   const x = val * 1;
-  console.log(val);
+
   const tour = await tours.find({ id: x });
   if (tour.length === 0) {
     return res.status(200).json({
@@ -99,7 +99,7 @@ const checkID = async (req, res, next, val) => {
       data: 'No tours found',
     });
   }
-  console.log('x');
+
   next();
 };
 
@@ -128,7 +128,6 @@ const getTourStats = catchAsync(async (req, res, next) => {
       data: stats,
     });
   } catch (error) {
-    console.log(error);
     res.status(404).json({
       message: 'Failed',
       data: error,
@@ -224,7 +223,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 const createTour = catchAsync(async (req, res, next) => {
   const tour = req.body;
   const newTour = new tours(req.body);
-  console.log(newTour);
+
   const doc = await newTour.save();
   res.status(200).json({ doc });
 });
@@ -234,7 +233,6 @@ const getTour = catchAsync(async (req, res, next) => {
   const tour = await tours.findById(id).populate('reviews');
 
   const guidInfo = await users.findOne({ _id: '5c8a22c62f8fb814b56fa18b' });
-  console.log(guidInfo);
 
   res.status(200).json({
     message: 'Success',

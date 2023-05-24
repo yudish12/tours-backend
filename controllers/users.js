@@ -42,7 +42,6 @@ const filterObj = (obj, ...fields) => {
 
 const checkBody = (req, res, next) => {
   if (!req.body.name) {
-    console.log('asd');
     return res.status(404).json({
       message: 'name is missing',
     });

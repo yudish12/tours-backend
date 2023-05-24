@@ -10,8 +10,6 @@ import { postReview } from './postReview.js';
 import { reviewManage } from './reviewManager.js';
 import { showChart } from './getStats.js';
 
-console.log('x');
-
 const mapBox = document.getElementById('map');
 const Loginform = document.querySelector('.loginForm');
 const Signupform = document.querySelector('.signupForm');
@@ -45,7 +43,6 @@ if (Loginform) {
     Login(email, passwrod);
   });
 }
-console.log('x');
 
 if (Signupform) {
   Signupform.addEventListener('submit', (e) => {
@@ -62,19 +59,14 @@ if (logoutBtn) {
   logoutBtn.addEventListener('click', logout);
 }
 
-console.log(updateForm);
-
 if (updateForm) {
-  console.log(document.getElementById('photo').files);
   updateForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    console.log('adasda');
 
     const form = new FormData();
     form.append('name', updateForm.elements['name'].value);
     form.append('email', updateForm.elements['email'].value);
     form.append('photo', document.getElementById('photo').files[0]);
-    console.log(document.getElementById('photo').files[0]);
     update(form, 'updateMe');
   });
 }
@@ -97,7 +89,6 @@ if (forgotPasswordFormBtn) {
     const loginContainer = document.querySelector('.login-form');
     const formForgot = document.querySelector('.forgotPasswordForm');
     formForgot.classList.remove('visible');
-    console.log(main, loginContainer);
     main.classList.add('popup');
     loginContainer.classList.add('visible');
   });
@@ -109,7 +100,6 @@ if (closePopup) {
     const loginContainer = document.querySelector('.login-form');
     const formForgot = document.querySelector('.forgotPasswordForm');
     formForgot.classList.add('visible');
-    console.log(main, loginContainer);
     main.classList.remove('popup');
     loginContainer.classList.remove('visible');
   });
@@ -143,7 +133,6 @@ if (bookBtn) {
 if (stars) {
   stars.forEach((star, ind1) => {
     star.addEventListener('click', () => {
-      console.log(star);
       stars.forEach((star, ind2) => {
         ind1 >= ind2
           ? star.classList.add('active')
@@ -166,7 +155,6 @@ if (reviewForm) {
     });
 
     const tour = window.location.href.split('/')[4];
-    console.log(tour);
     postReview(review, rating, tour);
   });
 }
@@ -199,10 +187,8 @@ if (slides) {
 
   const slideImage = () => {
     slides.forEach((slide) => {
-      console.log(counter);
       const x = slide.style.left;
       slide.style.transform = `translateX(-${counter * 100}%)`;
-      console.log(slide);
     });
   };
 
@@ -212,7 +198,6 @@ if (slides) {
   };
 
   const goNext = () => {
-    console.log('xcas');
     counter = (counter + 1) % 5;
     slideImage();
   };

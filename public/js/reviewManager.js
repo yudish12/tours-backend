@@ -2,7 +2,7 @@ import axios from 'axios';
 import { showAlert } from './alert';
 
 export const reviewManage = async (query, id) => {
-  const url = `http://localhost:5000/api/v1/reviews/${query}/${id}`;
+  const url = `/api/v1/reviews/${query}/${id}`;
   try {
     const res = await axios.patch(url);
     if (res.data.status === 'success') {

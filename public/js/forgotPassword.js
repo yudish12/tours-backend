@@ -3,12 +3,9 @@ import axios from 'axios';
 
 export const forgotHandler = async (email) => {
   try {
-    const res = await axios.post(
-      `http://localhost:5000/api/v1/users/forgotPassword`,
-      {
-        email,
-      }
-    );
+    const res = await axios.post(`/api/v1/users/forgotPassword`, {
+      email,
+    });
     if (res.data.status === 'success') {
       showAlert(
         'success',
@@ -19,7 +16,6 @@ export const forgotHandler = async (email) => {
       }, 3000);
     }
   } catch (error) {
-    console.log(error);
     showAlert('error', error.response.message);
   }
 };

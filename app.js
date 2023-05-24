@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const compression = require('compression');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 
@@ -68,6 +69,8 @@ app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(morgan('dev'));
+
+app.use(compression());
 
 app.use((req, res, next) => {
   req.reqTime = new Date().toISOString();

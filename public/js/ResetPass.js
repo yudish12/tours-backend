@@ -3,16 +3,11 @@ import { showAlert } from './alert';
 
 export const resetHandler = async (password, passwordConfirm) => {
   const token = window.location.href.split('/')[4];
-  console.log(token);
   try {
-    const res = await axios.patch(
-      `http://localhost:5000/api/v1/users/resetPassword/${token}`,
-      {
-        password,
-        passwordConfirm,
-      }
-    );
-    console.log(res);
+    const res = await axios.patch(`/api/v1/users/resetPassword/${token}`, {
+      password,
+      passwordConfirm,
+    });
     if (res.data.message === 'Password changed sucessfully') {
       showAlert('success', 'Password Changed Successfully');
       window.setTimeout(() => {
@@ -20,7 +15,6 @@ export const resetHandler = async (password, passwordConfirm) => {
       }, 500);
     }
   } catch (error) {
-    console.log(error);
     showAlert('error', error.response.message);
   }
 };

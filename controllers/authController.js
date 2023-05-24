@@ -82,6 +82,7 @@ const authMiddleware = catchAsync(async (req, res, next) => {
   }
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
   const User = await user.findById(decoded.obj._id).select('-password');
   if (!User) {
     return next(
@@ -99,7 +100,6 @@ const authMiddleware = catchAsync(async (req, res, next) => {
 });
 
 const logout = (req, res) => {
-  console.log('x');
   res.cookie('jwt', 'logged out', {
     expires: new Date(Date.now() + 10 * 1000),
     httponly: true,

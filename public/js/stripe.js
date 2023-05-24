@@ -8,10 +8,7 @@ const stripe = Stripe(
 
 export const bookTour = async (tourId) => {
   try {
-    const session = await axios(
-      `http://localhost:5000/api/v1/bookings/chechout-session/${tourId}`
-    );
-    console.log(session);
+    const session = await axios(`/api/v1/bookings/chechout-session/${tourId}`);
     window.open(session.data.session.url, '_blank');
   } catch (error) {
     showAlert('error', error);

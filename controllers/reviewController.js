@@ -42,7 +42,6 @@ const updateReview = catchAsync(async (req, res, next) => {
   const tourId = doc.tour;
 
   if (newRating) {
-    console.log('x');
     const tourData = await tours.findById(tourId);
     const { ratingsQuantity } = tourData;
     const { ratingsAverage } = tourData;
@@ -63,7 +62,6 @@ const updateReview = catchAsync(async (req, res, next) => {
 const deleteReview = catchAsync(async (req, res, next) => {
   const { reviewId } = req.params;
   const doc = await reviews.findById(reviewId);
-  console.log(doc);
   const tourId = doc.tour;
   const rating = doc.rating;
   const data = await reviews.findByIdAndDelete(reviewId);

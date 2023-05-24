@@ -7,8 +7,6 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const getCheckoutSession = catchAsync(async (req, res, next) => {
   const tour = await tours.findById(req.params.tourId);
 
-  console.log(`${req.protocol}://${req.get('host')}/tour/${tour.slug}`);
-
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     customer_email: req.user.email,

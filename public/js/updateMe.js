@@ -4,11 +4,7 @@ import { showAlert } from './alert';
 export const update = async (data, type) => {
   try {
     const url = type === 'password' ? 'updateMypassword' : 'updateMe';
-    const res = await axios.patch(
-      `http://localhost:5000/api/v1/users/${url}`,
-      data
-    );
-    console.log('xcas');
+    const res = await axios.patch(`/api/v1/users/${url}`, data);
 
     if (
       res.data.message === 'success' ||

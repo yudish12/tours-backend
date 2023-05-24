@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const Login = async (email, password) => {
   try {
-    const res = await axios.post('http://localhost:5000/api/v1/users/login/', {
+    const res = await axios.post('/api/v1/users/login/', {
       email: email,
       password: password,
     });
@@ -15,14 +15,13 @@ export const Login = async (email, password) => {
       }, 500);
     }
   } catch (error) {
-    console.log(error);
     showAlert('error', error.response.data.message);
   }
 };
 
 export const logout = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/v1/users/logout');
+    const res = await axios.get('/api/v1/users/logout');
     if (res.data.message === 'Success') location.reload(true);
   } catch (error) {
     showAlert('error', 'error logging out! Please try again');
