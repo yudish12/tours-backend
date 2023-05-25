@@ -9,6 +9,7 @@ const xss = require('xss-clean');
 const compression = require('compression');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const port = process.env.PORT || 5000;
 
@@ -37,6 +38,10 @@ const viewRoutes = require('./routes/viewRoutes');
 const app = express();
 
 app.enable('trust proxy');
+
+app.use(cors());
+
+app.options('*', cors());
 
 app.use(cookieParser());
 
