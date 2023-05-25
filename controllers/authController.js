@@ -29,7 +29,7 @@ const signupController = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     message: 'User signed up successfully',
-    token: jwtFunc.signToken(userObj, res),
+    token: jwtFunc.signToken(userObj, req, res),
     userObj,
   });
 });
@@ -55,7 +55,7 @@ const loginController = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
       message: 'Logged in successfully',
-      token: jwtFunc.signToken(userObj, res),
+      token: jwtFunc.signToken(userObj, req, res),
       userObj,
     });
   } else {
@@ -223,7 +223,7 @@ const updateForgotPassword = catchAsync(async (req, res, next) => {
   User.resetTokenExpires = undefined;
   await User.save();
 
-  const token = jwtFunc.signToken(User, res);
+  const token = jwtFunc.signToken(User, req, res);
 
   res.status(200).json({
     message: 'Password changed sucessfully',
@@ -251,6 +251,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
       email: User.email,
       role: User.role,
     },
+    req,
     res
   );
 

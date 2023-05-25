@@ -10,6 +10,8 @@ const compression = require('compression');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 
+const port = process.env.PORT || 5000;
+
 dotenv.config({ path: './.env' });
 
 const AppError = require('./utils/appError');
@@ -33,6 +35,8 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const viewRoutes = require('./routes/viewRoutes');
 
 const app = express();
+
+app.enable('trust proxy');
 
 app.use(cookieParser());
 
@@ -119,7 +123,7 @@ app.all('*', (req, res, next) => {
 //error middle ware whenever first arg is err object it is error middleware
 app.use(globalErrorHandler);
 
-const server = app.listen(5000, () => {
+const server = app.listen(port, () => {
   console.log('server started');
 });
 
